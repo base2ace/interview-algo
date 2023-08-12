@@ -1,0 +1,73 @@
+https://leetcode.com/problems/median-of-two-sorted-arrays/
+
+Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
+
+The overall run time complexity should be O(log (m+n)).
+
+Example 1:
+
+Input: nums1 = [1,3], nums2 = [2]
+Output: 2.00000
+Explanation: merged array = [1,2,3] and median is 2.
+Example 2:
+
+Input: nums1 = [1,2], nums2 = [3,4]
+Output: 2.50000
+Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
+ 
+
+Constraints:
+
+nums1.length == m
+nums2.length == n
+0 <= m <= 1000
+0 <= n <= 1000
+1 <= m + n <= 2000
+-106 <= nums1[i], nums2[i] <= 106
+
+
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& A, vector<int>& B)
+{
+    int n = A.size();
+    int m = B.size();
+    if (n > m)
+        return findMedianSortedArrays(B, A); // Swapping to make A smaller
+ 
+    int start = 0;
+    int end = n;
+    int realmidinmergedarray = (n + m + 1) / 2;
+ 
+    while (start <= end) {
+        int mid = (start + end) / 2;
+        int leftAsize = mid;
+        int leftBsize = realmidinmergedarray - mid;
+        int leftA
+            = (leftAsize > 0)
+                  ? A[leftAsize - 1]
+                  : INT_MIN; // checking overflow of indices
+        int leftB
+            = (leftBsize > 0) ? B[leftBsize - 1] : INT_MIN;
+        int rightA
+            = (leftAsize < n) ? A[leftAsize] : INT_MAX;
+        int rightB
+            = (leftBsize < m) ? B[leftBsize] : INT_MAX;
+ 
+        // if correct partition is done
+        if (leftA <= rightB and leftB <= rightA) {
+            if ((m + n) % 2 == 0)
+                return (max(leftA, leftB)
+                        + min(rightA, rightB))
+                       / 2.0;
+            return max(leftA, leftB);
+        }
+        else if (leftA > rightB) {
+            end = mid - 1;
+        }
+        else
+            start = mid + 1;
+    }
+    return 0.0;
+}
+};
